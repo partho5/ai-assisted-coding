@@ -29,22 +29,12 @@ Read `_planning/_state.md`. Check conditions in order; take the first that match
 | 8 | `phase: modules` | 2 — Plan | `system/02_plan.md` |
 | 9 | `phase: building` and any sub-module is `built` | 3.5 — Verify | `system/03b_verify.md` |
 | 10 | `phase: building`, target given | 3 — Build | `system/03_build.md` |
-| 11 | `phase: building`, no target | 3 — Build | pick the first `pending` or `stale` sub-module whose `depends_on` are all `verified`; then `system/03_build.md`. If every sub-module is `verified`, set `phase: integrating` and go to row 12. If none is eligible but some remain unbuilt, stop and report the deadlock — the graph or a status is wrong. |
+| 11 | `phase: building`, no target | 3 — Build | pick the first `pending` or `stale` sub-module whose `depends_on` are all `verified` or `adopted`; then `system/03_build.md`. If every sub-module is `verified` or `adopted`, set `phase: integrating` and go to row 12. If none is eligible but some remain unbuilt, stop and report the deadlock — the graph or a status is wrong. |
 | 12 | `phase: integrating` | 4 — Integrate | `system/04_integrate.md` |
 | 13 | `phase: complete` | — | Report done. Ask what the user wants next. |
 
-Two orderings are deliberate:
-
-**Row 5 resolves instead of stopping.** In v1 an open question halted the project. Now it routes
-to a session that answers what it can from the goal and stops **once**, with only what genuinely
-needs you. This is the change that removes most interruptions.
-
-**Row 9 sits above rows 10 and 11.** A `built` sub-module gets verified before any new one starts,
-so a failure is caught before anything is built on top of it.
-
-Rows 7 and 8 are separate on purpose. Phase 0 writes `_state.md`, so row 2 no longer catches a
-project that has understood but not decomposed — `phase: understood` must route to Phase 1
-explicitly or module decomposition is skipped.
+Order matters: row 5 resolves questions instead of halting; row 9 verifies a `built` sub-module
+before any new one starts, so a failure is caught before anything is built on top of it.
 
 Load exactly one phase file. Do not read the others.
 
@@ -54,31 +44,32 @@ Load exactly one phase file. Do not read the others.
 
 These bind in every phase. They are not preferences.
 
-1. **Ask at the start, not at the end.** The asking budget inverts across the run. Phase 0 asks
-   maximally and is never automated. Phase 2 collects questions without stopping. By Phase 3 you
-   ask almost nothing. Under-asking in Phase 0 is what causes over-asking later.
-2. **Decide or escalate — never assume silently.** From Phase 1 onward, `STANDARDS.md` §1 governs
-   what you may decide alone. Decide what is on the never-ask list, derive what the goal settles,
-   escalate what is on the always-ask list. Record every decision in `_planning/_decisions.md`.
-   An unrecorded decision is an assumption. **Phase 0 is exempt** — it is the interview.
-3. **The goal outranks the contract.** A contract that conflicts with an acceptance criterion in
-   `00_goal.md` is drift. Do not implement a contract that cannot satisfy the goal it serves.
-4. **Contracts are law.** Implement the declared contract exactly. If you cannot honor it, write
-   a `_drift.md` entry and stop. Never silently deviate, extend, or "improve" a contract.
-5. **Never degrade to proceed.** `STANDARDS.md` §2 lists what counts. Blocked means file drift or
-   raise a `❓` — never substitute something easier and continue.
-6. **You do not grade your own work.** A build session can reach `built`. Only a Phase 3.5 verify
-   session, which never saw the building, can award `verified`.
-7. **Stay in your lane.** A build session writes only its own sub-module's source and tests.
-   Never edit another sub-module's code, another contract, the module map, or the invariants.
-8. **Read the slice, not the repo.** Load only the files your phase authorizes. Never read
-   another sub-module's *source* during a build session — read its *contract*.
-9. **Stop beats guess.** When blocked on something the goal cannot settle and the lists say to
-   escalate, write it to the correct file and stop. Stopping is a success state.
-10. **Requirements, not tutorials.** Contracts and instructions state *what must be true*. They
-    never contain step-by-step walkthroughs or example implementations. A `constrained by:` line
-    is one line of constraint, not a recipe.
-11. **Close the loop.** Every phase ends by updating `_state.md` and committing. No exceptions.
+1. **Ask at the start, not at the end.** Phase 0 asks maximally and is never automated. Phase 2
+   collects questions without stopping. By Phase 3 you ask almost nothing.
+2. **Decide or escalate — never assume silently.** From Phase 1 on, `STANDARDS.md` §1 says what
+   you may decide alone. Record every such decision in `_decisions.md`; an unrecorded decision is
+   an assumption. Phase 0 is exempt — it is the interview.
+3. **The goal outranks the contract.** A contract that cannot satisfy the criterion it claims is
+   drift, not something to implement faithfully.
+4. **Contracts are law.** Implement a `declared` contract exactly. Cannot honor it → `_drift.md`,
+   stop. Never silently deviate, extend, or improve one.
+5. **Never degrade to proceed.** `STANDARDS.md` §2 lists what counts. Blocked means drift or a
+   `❓` — never a convenient substitute.
+6. **You do not grade your own work.** A build session reaches `built`. Only Phase 3.5, which
+   never saw the building, awards `verified`.
+7. **Stay in your lane.** Write only your own sub-module's source and tests, plus the named
+   touch-points in `extends`. Never edit another sub-module's code, another contract, the map, or
+   the invariants.
+8. **Read the slice, not the repo — but never guess about code that already exists.** A
+   `declared` sub-module is read through its contract, never its source: the contract is a
+   promise, and coupling to its accidents breaks the next rebuild. **Existing code is a fact, not
+   a promise — read it whenever you need certainty.** Its contract is only a cache; if they
+   disagree, **the source wins**. Saving tokens is never a reason to build the wrong thing.
+9. **Stop beats guess.** Blocked on something the goal cannot settle and the lists say to
+   escalate → write it to the right file and stop. Stopping is a success state.
+10. **Requirements, not tutorials.** State what must be true, never how to build it. A
+    `constrained by:` line is one line of constraint, not a recipe.
+11. **Close the loop.** Every phase updates `_state.md` and commits. No exceptions.
 
 ---
 
@@ -101,35 +92,14 @@ A contract file over budget is a decomposition bug, not a formatting problem.
 
 ## 4. Files
 
-**System (reusable, never edited during a build):**
-
 ```
-_planning/system/VERSION              2
-_planning/system/STANDARDS.md         Loaded every session, every phase
-_planning/system/00_understand.md     Phase 0 protocol
-_planning/system/01_modules.md        Phase 1 protocol
-_planning/system/02_plan.md           Phase 2 protocol (also amend mode)
-_planning/system/02b_resolve.md       Phase 2.5 protocol
-_planning/system/03_build.md          Phase 3 protocol
-_planning/system/03b_verify.md        Phase 3.5 protocol
-_planning/system/04_integrate.md      Phase 4 protocol
-_planning/system/templates/           Blank forms for every runtime artifact
-```
-
-**Runtime (created and updated by the phases):**
-
-```
-_planning/00_inputs/                  Raw material you drop in. Any format.
-_planning/00_brief.md                 Non-technical description. A product person can check it.
-_planning/00_goal.md                  Core goal, acceptance criteria, ranked intent. Decision fuel.
-_planning/00_invariants.md            Technical conventions. Loaded by every build session.
-_planning/01_module_map.md            Module tree, dependencies, goal coverage, build order.
-_planning/02_contracts/<id>.md        One frozen public surface per sub-module.
-_planning/03_verdicts/<id>.md         Verify results. Read by the next build session on a FAIL.
-_planning/_incomplete.md              ❓ questions. Answered by Phase 2.5 or by you.
-_planning/_decisions.md               Every decision made without asking, and what it derives from.
-_planning/_drift.md                   Contract change requests.
-_planning/_state.md                   Per-sub-module status. Source of truth for routing.
+system/            VERSION, STANDARDS.md, one protocol per phase, templates/ — never edited
+00_inputs/         raw material you drop in, any format
+00_brief.md        non-technical description          00_goal.md      criteria + ranked intent
+00_invariants.md   technical conventions              01_module_map.md  tree, edges, coverage
+02_contracts/<id>.md   one surface per sub-module     03_verdicts/<id>.md   verify results
+_incomplete.md  ❓   _decisions.md  what was decided alone   _drift.md  contract changes
+_state.md          status per sub-module — source of truth for routing
 ```
 
 ---
@@ -151,6 +121,28 @@ the map, the contract filename, the verdict filename, and `_state.md`.
 set this.**
 
 `stale` — a contract this sub-module depends on changed after it was built. Must re-run Phase 3.
+
+`adopted` — existing code this system did not build. Its contract *describes* it instead of
+promising anything, so it is never `built` and never `verified` — there is no promise to check it
+against. Build order treats `adopted` as already satisfied.
+
+---
+
+## 7. Existing projects
+
+The phases and this command do not change when a project already exists. One rule covers it:
+
+**If an artifact already exists, reuse it. If it does not and code exists, read the code.**
+
+- `00_goal.md`, `00_invariants.md`, contracts already there → they stand. Plan only the new work.
+  Do not re-interview, re-decide, renumber, or reset finished sub-modules.
+- Code exists but those files do not → **read the source to write them.** Invariants are
+  *extracted* from the code, not decided. Where the code is inconsistent with itself, record both
+  patterns and raise a `❓`.
+- An existing component your new work depends on becomes a normal `depends_on` entry with status
+  `adopted` and a contract written by reading it.
+- Coverage is checked only against this round's criteria. Earlier ones are already satisfied by
+  code that exists.
 
 `attempts: <n>` — incremented on every verify FAIL. At 3, the project stops (row 3).
 

@@ -19,7 +19,7 @@ A Phase 3.5 session that never saw you work decides the rest.
 ## Step 1 — Load the slice
 
 Determine the target: from the user's invocation, or the first `pending` or `stale` sub-module
-in `_state.md` whose `depends_on` are all `verified`.
+in `_state.md` whose `depends_on` are all `verified` or `adopted`.
 
 If the target is `stale`, a contract it depends on moved. Read the `RESOLVED` `_drift.md` entry
 that caused it, and treat the changed contract as the current law — your existing code is the
@@ -39,10 +39,14 @@ Read **exactly these files and no others**:
 8. `_planning/_drift.md` — only entries touching those contracts
 9. Your own `owns` source paths, if any already exist
 
-**Do not read:** other sub-modules' source, the full module map beyond your own node,
-`_incomplete.md`, or unrelated contracts. Reading a dependency's *implementation* is a Law 5
-violation — its contract is the interface, and if the contract is insufficient that is a drift
-entry, not a reason to go look.
+**Do not read:** the source of a `kind: declared` sub-module, the module map beyond your own node,
+`_incomplete.md`, or unrelated contracts. For those the contract *is* the interface; if it is
+insufficient that is drift, not a reason to go look.
+
+**Do read, whenever you need certainty:** the real source behind any `kind: adopted` dependency,
+and any file in your `extends` list. That code is a fact, not a promise (Law 8), and its contract
+is only a cache. **If the source disagrees with it, the source wins** — correct the contract, note
+it in your report, carry on. That is not drift and does not stop you.
 
 If total planning context exceeds ~1200 lines, stop and file a drift entry proposing a split
 or a facade. Too many neighbors is a decomposition bug.
@@ -85,7 +89,10 @@ makes the first one safe.
 
 ## Step 3 — Implement
 
-Write only inside your `owns` paths.
+Write inside your `owns` paths, and at the **named touch-points** in your `extends` list —
+nothing else in those files. In an `extends` file you may not restructure, rename, reformat or
+refactor anything, not even something obviously wrong: other code depends on it and nothing here
+is checking that. Report it instead.
 
 - Implement the contract exactly: every declared export, signature, error, and guarantee.
   Nothing more. An undeclared export is scope creep and a future integration bug.
@@ -220,33 +227,21 @@ outstanding item named, and saying so is the whole point of having a status fiel
 
 ## When to stop instead of finishing
 
-Use `system/templates/_drift.md` when filing drift — create `_planning/_drift.md` from it if it
-does not exist yet, otherwise append the next `D-<nnn>`. Append questions to the
-"Appended during build" section of `_planning/_incomplete.md`.
+| Situation | File it as |
+|---|---|
+| the contract cannot be honored | `_drift.md` |
+| the contract cannot satisfy a `G-` criterion it claims | `_drift.md` |
+| a dependency's contract is insufficient or contradicts yours | `_drift.md` |
+| context budget blown | `_drift.md`, proposing a split or a facade |
+| a decision on the **always-ask list** is required | `_incomplete.md` |
+| you need a dependency the invariants do not permit | `_incomplete.md` |
 
-In both cases set your status back to `pending` in `_state.md`, so the next session routes
-correctly instead of finding an orphaned `in-progress`. Do **not** leave yourself `built` — a
-`built` sub-module routes straight to verify, and you did not finish.
+Drift: append the next `D-<nnn>` using `system/templates/_drift.md`, and list it under "Open
+blockers". Questions: append to "Appended during build" in `_incomplete.md` — **not** a blocker,
+Phase 2.5 sees it first and only lists it if it escalates.
 
-Record under "Open blockers" only what actually needs the user: **drift, yes. A `❓`, no** — Phase
-2.5 sees it first and lists it there only if it escalates.
+Either way: revert to `pending` (never leave yourself `built` — that routes straight to verify)
+and leave no half-written source behind.
 
-Stop when:
-
-- the contract cannot be honored → `_drift.md`
-- the contract cannot satisfy a `G-` criterion it claims → `_drift.md` (the goal outranks it)
-- a dependency's contract is insufficient or contradicts yours → `_drift.md`
-- context budget is blown → `_drift.md`, proposing a split or a facade
-- a decision on the **always-ask list** is required → `_incomplete.md`
-- you need a dependency the invariants do not permit → `_incomplete.md`
-
-Note the difference in v2: a `❓` you file does **not** halt the project. The router sends it to
-Phase 2.5, which answers what the goal settles and batches only the rest to the user. Drift still
-stops — a frozen promise other sub-modules were built against is not yours or the resolver's to
-change.
-
-In every case: revert your status to `pending` and leave no half-written source behind. The next
-session must find a clean starting point.
-
-Stopping is a success state. A session that stopped with a precise question costs one round
-trip. A session that guessed costs a debugging campaign at assembly.
+A `❓` does not halt the project; drift does. A frozen promise other sub-modules were built
+against is not yours to change.

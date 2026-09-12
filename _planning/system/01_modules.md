@@ -50,6 +50,21 @@ here freezes a decision nobody has made.
 
 For each sub-module record: **id**, one-line purpose, provisional `depends_on`, and `satisfies`.
 
+**Existing code your new work depends on** is a normal `depends_on` entry with status `adopted`.
+Find those by **reading the code**, not by guessing from filenames — a dependency inferred from a
+name is how a feature gets built against a function that does not do what it sounds like.
+
+**Existing files your new work must modify** — register a route, add a migration, extend a model —
+go in `extends` on the sub-module that needs them, one line per touch-point:
+
+```
+extends:
+  - src/routes/index.ts — register the new route
+```
+
+`owns` is exclusive: you made it, you may rewrite it. `extends` lets you **add at the named point
+and nothing else**. Two sub-modules may `extends` one file; neither may `own` it.
+
 ## Step 2 — Tie every sub-module to the goal
 
 This is what stops a project from building 22 correct things that add up to the wrong product.

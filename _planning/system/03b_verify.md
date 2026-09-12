@@ -40,6 +40,11 @@ commit messages beyond the file list. Inheriting the builder's reasoning reintro
 problem this phase exists to remove. If a previous verdict exists for this target, read only its
 findings list — not its reasoning.
 
+**You never verify `adopted` code** — it was not built to a promise, so there is nothing to hold
+it to. Judge only what this project built. You may read adopted source to check the new code uses
+it correctly; if you find its contract describes it inaccurately, that is a finding against the
+contract, not against the existing code.
+
 ## Step 2 — Judge against the contract
 
 Go through the contract item by item — every export and signature, every route, method and

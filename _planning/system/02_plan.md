@@ -121,6 +121,13 @@ A contract never contains: implementation steps, algorithm choices, internal hel
 example bodies, or prose explaining how to build it. If a consumer cannot observe it, it does
 not belong in the contract.
 
+**Every contract declares `kind:`.** `declared` is a promise written before the code — everything
+above applies. `adopted` is a **description of existing code, written by reading it**: cover only
+the surface your new work uses, record what it *actually* does including behavior you would not
+have designed, and mark anything uncertain `unverified:`. An adopted contract is never frozen and
+has no drift process — there is no promise to break. It is either accurate or wrong, and wrong
+gets corrected against the source.
+
 **Consistency pass — this is where integration bugs are prevented.** For every `depends_on`
 edge, read both contracts side by side and confirm: the exported signature the consumer calls
 exists with exactly that name and shape; the types match on both sides; every error the
