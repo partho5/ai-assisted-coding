@@ -1,13 +1,21 @@
 # INVARIANTS
 
 > Loaded by every build session. Budget: 250 lines. Rules only — no rationale, no design essay.
-> Every rule must trace to an answered `❓` or an explicit statement in the project description.
-> Delete any section this project does not need. Never fill a section with a plausible default.
+> Every rule must trace to an answered `❓`, a line in `00_goal.md`, or an explicit statement in
+> `00_brief.md`. Delete any section this project does not need. Never fill one with a plausible
+> default.
+>
+> **`system/STANDARDS.md` binds on top of this file and is loaded in the same sessions.**
+> Do not restate anything from it — decision authority, the no-degradation list, comment rules,
+> single responsibility, commit cadence. Repeating them wastes the budget every build session
+> pays forever. This file holds what is specific to **this project's stack**.
+>
+> **`00_goal.md` holds what the project is for.** This file holds how it is built.
 
-## Project
+## Technical scope
 
-- **What it is:** <one paragraph>
-- **Explicit non-goals:** <what this project will not do>
+- **Runtime shape:** <what kind of thing this is — service, app, CLI, job>
+- **Explicit technical non-goals:** <what this codebase will not support>
 
 ## Stack
 
@@ -56,6 +64,21 @@
 - How config is read:
 - How secrets are supplied:
 - Rule: no inline literal for anything configurable.
+
+## Production parity
+
+Development runs production-equivalent configuration. No prototype setup that must be swapped
+before deploy.
+
+- Same in dev and prod: <services, drivers, protocols, auth mechanism>
+- **May differ at deploy — the complete list:**
+  | Value | Why it must differ |
+  |---|---|
+  | <credential / endpoint / env-specific value> | |
+
+Anything not on that list must not need changing to deploy. If something does, the configuration
+is wrong and gets fixed here — not written down as a deployment step. Phase 4 checks this against
+the running system.
 
 ## Security
 

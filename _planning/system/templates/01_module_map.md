@@ -22,7 +22,8 @@ Topological, leaves first. Ties broken by fewest dependents.
 
 #### <module>.<sub-module>
 
-- **purpose:** <one line>
+- **purpose:** <one line, in the language of `00_brief.md` — not in stack terms>
+- **satisfies:** `G-00n`, `G-00n`
 - **depends_on:** `<id>`, `<id>` — or `none`
 - **consumed_by:** `<id>` — or `none`
 - **contract:** `_planning/02_contracts/<id>.md`
@@ -33,10 +34,29 @@ Topological, leaves first. Ties broken by fewest dependents.
 #### <module>.<sub-module>
 
 - **purpose:**
+- **satisfies:**
 - **depends_on:**
 - **consumed_by:**
 - **contract:**
 - **owns:**
+
+## Goal coverage
+
+Every criterion in `00_goal.md`, and who owns it. **Phase 2 cannot freeze contracts while this
+table has a hole in either direction.**
+
+| Criterion | Satisfied by | |
+|---|---|---|
+| `G-001` | `<id>`, `<id>` | ok |
+| `G-002` | — | **orphan criterion — nothing builds this** |
+
+| Sub-module satisfying nothing | |
+|---|---|
+| `<id>` | **orphan sub-module — serves no stated goal** |
+
+An orphan criterion means the plan provably cannot deliver what the project is for. An orphan
+sub-module is either scope creep or a goal the brief forgot to state. Both are decisions, not
+formatting: raise a `❓` rather than deleting a row to make the table clean.
 
 ## Graph checks
 
@@ -46,3 +66,4 @@ Topological, leaves first. Ties broken by fewest dependents.
 - [ ] No sub-module is a layer (`utils`, `models`, `helpers`) rather than a capability
 - [ ] `owns` paths disjoint
 - [ ] Build order is a valid topological sort
+- [ ] Every criterion has an owner; every sub-module has a criterion

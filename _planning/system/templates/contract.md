@@ -11,6 +11,16 @@ budget: 150 lines — over budget means the sub-module is too big, not that the 
 
 <one or two lines>
 
+## Satisfies
+
+The goal criteria this sub-module helps make true. `constrained by:` is **copied verbatim** from
+`00_goal.md` — it tells the build session the specific way, and it is part of the requirement, not
+advice. Reaching the same observable result another way fails verification.
+
+| Criterion | Statement | constrained by |
+|---|---|---|
+| `G-00n` | <the observable fact> | <the line, copied exactly> |
+
 ## Depends on
 
 `<id>`, `<id>` — or `none`
