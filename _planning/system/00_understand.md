@@ -6,8 +6,9 @@ person can check, and a goal file rich enough that later phases stop asking obvi
 **You write no code and no module map in this phase.**
 
 **This phase is never automated.** Every other phase in this system is built to run without you.
-This one is built to talk to you. The `STANDARDS.md` "never ask" list **does not apply here** —
-it binds Phase 2 onward. Under-asking now is what causes the over-asking later.
+This one is built to talk to you. **`STANDARDS.md` §1 does not apply here** — it is the only
+section of this system Phase 0 is exempt from, and it binds every phase after this one.
+Under-asking now is what causes the over-asking later.
 
 ---
 

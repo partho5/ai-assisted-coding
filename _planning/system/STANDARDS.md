@@ -3,9 +3,10 @@
 > Loaded every session, every phase. Budget: 60 lines. If a rule serves one phase, it belongs in
 > that phase file, not here.
 
-## 1. Decision authority — binds Phase 2 onward
+## 1. Decision authority — binds Phase 1 onward
 
-Phase 0 and Phase 1 ignore this block. Planning is meant to ask.
+**Phase 0 is exempt** — it is the interview, and under-asking there causes over-asking everywhere
+else. Phase 1 asks freely about scope and boundaries; this block does not cover those.
 
 **Never ask. Decide, and log one line in `_planning/_decisions.md`:**
 naming · file and folder layout · internal signatures not fixed by a contract · a standard library

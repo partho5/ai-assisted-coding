@@ -57,10 +57,10 @@ These bind in every phase. They are not preferences.
 1. **Ask at the start, not at the end.** The asking budget inverts across the run. Phase 0 asks
    maximally and is never automated. Phase 2 collects questions without stopping. By Phase 3 you
    ask almost nothing. Under-asking in Phase 0 is what causes over-asking later.
-2. **Decide or escalate — never assume silently.** From Phase 2 onward, `STANDARDS.md` §1 governs
+2. **Decide or escalate — never assume silently.** From Phase 1 onward, `STANDARDS.md` §1 governs
    what you may decide alone. Decide what is on the never-ask list, derive what the goal settles,
    escalate what is on the always-ask list. Record every decision in `_planning/_decisions.md`.
-   An unrecorded decision is an assumption.
+   An unrecorded decision is an assumption. **Phase 0 is exempt** — it is the interview.
 3. **The goal outranks the contract.** A contract that conflicts with an acceptance criterion in
    `00_goal.md` is drift. Do not implement a contract that cannot satisfy the goal it serves.
 4. **Contracts are law.** Implement the declared contract exactly. If you cannot honor it, write
