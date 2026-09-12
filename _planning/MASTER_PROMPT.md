@@ -25,12 +25,13 @@ Read `_planning/_state.md`. Check conditions in order; take the first that match
 | 4 | `_drift.md` has an `APPROVED` entry | 2 — Amend | `system/02_plan.md` (amend mode) |
 | 5 | `_incomplete.md` has an unanswered `❓` | 2.5 — Resolve | `system/02b_resolve.md` |
 | 6 | `_drift.md` has an `OPEN` entry | — | Stop. Summarize it and its blast radius. Ask the user to rule `APPROVED` or `REJECTED` in the file. |
-| 7 | `phase: understood` or `phase: modules` | 2 — Plan | `system/02_plan.md` |
-| 8 | `phase: building` and any sub-module is `built` | 3.5 — Verify | `system/03b_verify.md` |
-| 9 | `phase: building`, target given | 3 — Build | `system/03_build.md` |
-| 10 | `phase: building`, no target | 3 — Build | pick the first `pending` or `stale` sub-module whose `depends_on` are all `verified`; then `system/03_build.md`. If every sub-module is `verified`, set `phase: integrating` and go to row 11. If none is eligible but some remain unbuilt, stop and report the deadlock — the graph or a status is wrong. |
-| 11 | `phase: integrating` | 4 — Integrate | `system/04_integrate.md` |
-| 12 | `phase: complete` | — | Report done. Ask what the user wants next. |
+| 7 | `phase: understood` | 1 — Modules | `system/01_modules.md` |
+| 8 | `phase: modules` | 2 — Plan | `system/02_plan.md` |
+| 9 | `phase: building` and any sub-module is `built` | 3.5 — Verify | `system/03b_verify.md` |
+| 10 | `phase: building`, target given | 3 — Build | `system/03_build.md` |
+| 11 | `phase: building`, no target | 3 — Build | pick the first `pending` or `stale` sub-module whose `depends_on` are all `verified`; then `system/03_build.md`. If every sub-module is `verified`, set `phase: integrating` and go to row 12. If none is eligible but some remain unbuilt, stop and report the deadlock — the graph or a status is wrong. |
+| 12 | `phase: integrating` | 4 — Integrate | `system/04_integrate.md` |
+| 13 | `phase: complete` | — | Report done. Ask what the user wants next. |
 
 Two orderings are deliberate:
 
@@ -38,8 +39,12 @@ Two orderings are deliberate:
 to a session that answers what it can from the goal and stops **once**, with only what genuinely
 needs you. This is the change that removes most interruptions.
 
-**Row 8 sits above rows 9 and 10.** A `built` sub-module gets verified before any new one starts,
+**Row 9 sits above rows 10 and 11.** A `built` sub-module gets verified before any new one starts,
 so a failure is caught before anything is built on top of it.
+
+Rows 7 and 8 are separate on purpose. Phase 0 writes `_state.md`, so row 2 no longer catches a
+project that has understood but not decomposed — `phase: understood` must route to Phase 1
+explicitly or module decomposition is skipped.
 
 Load exactly one phase file. Do not read the others.
 

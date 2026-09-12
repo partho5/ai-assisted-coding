@@ -222,9 +222,14 @@ outstanding item named, and saying so is the whole point of having a status fiel
 
 Use `system/templates/_drift.md` when filing drift — create `_planning/_drift.md` from it if it
 does not exist yet, otherwise append the next `D-<nnn>`. Append questions to the
-"Appended during build" section of `_planning/_incomplete.md`. In both cases set your status
-back to `pending` in `_state.md` and record the blocker under "Open blockers", so the next
-session routes correctly instead of finding an orphaned `in-progress`.
+"Appended during build" section of `_planning/_incomplete.md`.
+
+In both cases set your status back to `pending` in `_state.md`, so the next session routes
+correctly instead of finding an orphaned `in-progress`. Do **not** leave yourself `built` — a
+`built` sub-module routes straight to verify, and you did not finish.
+
+Record under "Open blockers" only what actually needs the user: **drift, yes. A `❓`, no** — Phase
+2.5 sees it first and lists it there only if it escalates.
 
 Stop when:
 
@@ -240,8 +245,8 @@ Phase 2.5, which answers what the goal settles and batches only the rest to the 
 stops — a frozen promise other sub-modules were built against is not yours or the resolver's to
 change.
 
-In every case: revert your status to `pending`, record the blocker id under "Open blockers",
-and leave no half-written source behind. The next session must find a clean starting point.
+In every case: revert your status to `pending` and leave no half-written source behind. The next
+session must find a clean starting point.
 
 Stopping is a success state. A session that stopped with a precise question costs one round
 trip. A session that guessed costs a debugging campaign at assembly.

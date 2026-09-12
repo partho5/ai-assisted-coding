@@ -98,7 +98,9 @@ freeze" in the goal file.
 
 ## Step 6 — Close
 
-Create `_planning/_state.md` from `system/templates/_state.md` with `phase: understood`.
+Create `_planning/_state.md` from `system/templates/_state.md` with `phase: understood` and an
+**empty sub-module table** — decomposition is Phase 1's job, not yours. `phase: understood` is
+what routes the next session there.
 
 Commit.
 
